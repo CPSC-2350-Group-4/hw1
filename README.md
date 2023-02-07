@@ -1,2 +1,2 @@
 # hw1
-# Grantley Kuowww
+# Grantley Kuo
