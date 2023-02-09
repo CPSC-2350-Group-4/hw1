@@ -11,8 +11,40 @@
 
         <input type="file" id="csv" accept=".csv"/>
         <br/>
-        <input type="submit" value="Submit CSV"/>
+        <button id="submit">Submit</button>
 
     </form>
+    <!-- to help with coverting csv data to json -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+    <script>
+        console.log("here");
+        const submit = document.getElementById("submit").addEventListener('click', () => {
+            Papa.parse(document.getElementById('csv').files[0],
+            {
+                download: true,
+                header: true,
+                skipEmptyLines: false,
+                complete: function(results){
+                    console.log(results);
+                    console.log("here2");
+                }
+            });
+        });
+    </script>
+
+    <p>Output using Hamilton Algo should be here</p>
+    <p>For example:</p>
+
+    <span>California 2</span>
+    <br>
+    <span>Virginia 4</span>
+    <br>
+    <span>West Virginia 5</span>
+    <br>
+    <span>Texas 8</span>
+    <br>
+    <span>New York 7</span>
+
 </body>
 </html>
