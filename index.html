@@ -11,13 +11,14 @@
 
         <input type="file" id="csv" accept=".csv"/>
         <br/>
-        <button id="submit">Submit</button>
+        <button type="button" id="submit">Submit</button>
 
     </form>
     <!-- to help with coverting csv data to json -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
     <script>
+        var data;
         const submit = document.getElementById("submit").addEventListener('click', () => {
             Papa.parse(document.getElementById('csv').files[0],
             {
@@ -25,10 +26,12 @@
                 header: true,
                 skipEmptyLines: false,
                 complete: function(results){
-                    console.log(results);
+                    data = results.data
                 }
             });
         });
+
+
     </script>
 
     <p>Output using Hamilton Algo should be here</p>
