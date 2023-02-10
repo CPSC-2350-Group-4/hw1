@@ -1,37 +1,26 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <title>Hamilton's Apportionment Algorithm</title>
 </head>
+
 <body>
     <h1>Implementation of Hamilton Algorithm</h1>
-    <p>This program assumes that there are 435 representatives. <br> 
-        Please submit a csv file with populations for each state or province.</p>
+    <p>This program assumes that there are 435 representatives. <br>
+        Please submit a csv file with populations for each state or province.</p><br />
     <form id="form">
+        <input type="file" id="csv" accept=".csv" />
+        <br /><br />
+        <input type="submit" value="Submit"/>
+    </form><br />
 
-        <input type="file" id="csv" accept=".csv"/>
-        <br/>
-        <button id="submit">Submit</button>
+    <script src="./logic.js"></script>
 
-    </form>
-    <!-- to help with coverting csv data to json -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <p>Output using Hamilton Algo should be here:</p>
+    <div id="output"></div><br/>
 
-    <script>
-        const submit = document.getElementById("submit").addEventListener('click', () => {
-            Papa.parse(document.getElementById('csv').files[0],
-            {
-                download: true,
-                header: true,
-                skipEmptyLines: false,
-                complete: function(results){
-                    console.log(results);
-                }
-            });
-        });
-    </script>
-
-    <p>Output using Hamilton Algo should be here</p>
     <p>For example:</p>
 
     <span>California 2</span>
@@ -45,4 +34,5 @@
     <span>New York 7</span>
 
 </body>
+
 </html>
