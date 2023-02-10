@@ -16,10 +16,27 @@
         <input type="submit" value="Submit"/>
     </form><br />
 
-    <script src="./logic.js"></script>
+        <input type="file" id="csv" accept=".csv"/>
+        <br/>
+        <button type="button" id="submit">Submit</button>
 
-    <p>Output using Hamilton Algo should be here:</p>
-    <div id="output"></div><br/>
+    </form>
+    <!-- to help with coverting csv data to json -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+    <script>
+        const submit = document.getElementById("submit").addEventListener('click', () => {
+            Papa.parse(document.getElementById('csv').files[0],
+            {
+                download: true,
+                header: true,
+                skipEmptyLines: false,
+                complete: function(results){
+                    console.log(results);
+                }
+            });
+        });
+    </script>
 
     <p>For example:</p>
 
