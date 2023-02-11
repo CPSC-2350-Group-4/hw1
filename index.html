@@ -1,29 +1,36 @@
+<!-- This file is contributed by:
+Yunze Guan(Gary), Grantley Kuo, Matthew Pham
+For hw1 in CPSC2350, 2023 Spring -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Hamilton's Apportionment Algorithm</title>
 </head>
 
 <body>
     <h1>Implementation of Hamilton Algorithm</h1>
-    <p>Please submit a csv file with populations for each state or province.</p><br />
+    <p>Please submit a csv file with populations for each state or province.</p><br>
     <form id="form">
         <label># of representatives:&nbsp;</label>
-        <input type="number" id="representatives" value="435" min="1"/><br/><br/>
-        <input type="file" id="csv" accept=".csv"/>
-        <br /><br />
-        <input type="submit" value="Submit"/>
-    </form><br />
+        <input type="number" id="representatives" value="435" min="1"><br><br>
+        <input type="file" id="csv" accept=".csv">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form><br>
 
     <!-- to help with coverting csv data to json -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <!-- to help with converting json into csv files -->
+    <script defer src="https://cdn.jsdelivr.net/npm/json2csv"></script>
 
-    <script src="./logic.js"></script>
+    <script defer src="./logic.js"></script>
 
     <p>The result goes here:</p>
-    <div id="output"></div><br/>
+    <blockquote id="output"></blockquote><br>
+    <button type="button" id="dl">Download .csv</button>
 
     <p>For example:</p>
 
@@ -36,7 +43,9 @@
     <span>Texas: 8</span>
     <br>
     <span>New York: 7</span>
+    <br><br>
 
+    <footer>Group members: Yunze Guan(Gary), Grantley Kuo, Matthew Pham</footer>
 </body>
 
 </html>
