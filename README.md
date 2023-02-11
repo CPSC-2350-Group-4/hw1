@@ -6,4 +6,9 @@
 * Yunze Guan(Gary)
 * Grantley Kuo
 * Matthew Pham
+
+## Releases
+* Version Hamilton1.0: 2023-02-10 1800
+    notes: header should be strictly "State" and "Pop", any spaces will cause errors.
+* 
 ---
