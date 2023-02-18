@@ -7,15 +7,17 @@ For hw1 in CPSC2350, 2023 Spring -->
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hamilton's Apportionment Algorithm</title>
+    <title>Hamilton and Huntington's Apportionment Algorithms</title>
 </head>
 
 <body>
-    <h1>Implementation of Hamilton Algorithm</h1>
+    <h1>Implementation of Hamilton and Huntington Algorithms</h1>
     <p>Please submit a csv file with populations for each state or province.</p><br>
     <form id="form">
         <label># of representatives:&nbsp;</label>
         <input type="number" id="representatives" value="435" min="1"><br><br>
+        <label>Use Hamilton Apportionment instead</label>
+        <input type="checkbox" id="hamilton"><br><br>
         <input type="file" id="csv" accept=".csv">
         <br><br>
         <input type="submit" value="Submit">
