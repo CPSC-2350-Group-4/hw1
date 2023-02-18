@@ -24,10 +24,19 @@ const submit = document.getElementById("form").addEventListener('submit', (e) =>
             // when reading is finished,
             // the data will be parsed to results
             complete: function (results) {
-                totalPopulation(results);
-                avgPopPerRepCalc();
-                stateStats(results);
-                sortNprint(results);
+                totalPopNum = 0;
+                repNum = 0;
+                avgPopPerRep = 0;
+                if (document.getElementById("hamilton").checked) {
+                    totalPopulation(results);
+                    avgPopPerRepCalc();
+                    stateStats(results);
+                    sortNprint(results);
+                } else {
+                    priorityAssign(results);
+                    sortNprint(results);
+                }
+                
                 outputcsv(results);
             }
         });
@@ -40,6 +49,41 @@ function totalPopulation(results) {
         totalPopNum += Number(results.data[i].Pop);
     }
 
+}
+
+// calculates priority score of a state
+function priorityScoreCalc(populationOfState, numberOfStateRep) {
+    let priority = populationOfState / (Math.sqrt(numberOfStateRep * (numberOfStateRep + 1)));
+    return priority;
+}
+
+function priorityAssign(results) {
+    // add one rep and calculate priority score to each state
+    for (let i=0; i<results.data.length; i++) {
+        results.data[i].Representatives = 1;
+        results.data[i].priorityScore = priorityScoreCalc(results.data[i].Pop, results.data[i].Representatives);
+    }
+
+    let highestPriorityScore = 0,
+        objectWithHighestScore;
+    // adds x amount of representatives to states
+    for (let i=0; i<document.getElementById('representatives').value - 1; i++) {
+        highestPriorityScore = 0;
+        objectWithHighestScore;
+
+        // locates state with calculated highest priority
+        for (let i=0; i<results.data.length; i++) {
+            results.data[i].priorityScore = priorityScoreCalc(results.data[i].Pop, results.data[i].Representatives)
+            if (results.data[i].priorityScore > highestPriorityScore) {
+                highestPriorityScore = results.data[i].priorityScore;
+                objectWithHighestScore = results.data[i];
+            }
+        }
+
+        // adds one representative to state with highest priority
+        objectWithHighestScore.Representatives = objectWithHighestScore.Representatives + 1;
+    }
+    
 }
 
 // calculate the average population corresponding to each representative
@@ -103,8 +147,14 @@ function sortNprint(results) {
     document.getElementById("output").innerHTML = "";
 
     // print the results
-    for (let item of results.data) {
-        document.getElementById("output").innerHTML += item.State + ": " + item.Floor + "<br/>";
+    if (document.getElementById("hamilton").checked) {
+        for (let item of results.data) {
+            document.getElementById("output").innerHTML += item.State + ": " + Number(item.Floor) + "<br/>";
+        }
+    } else {
+        for (let item of results.data) {
+            document.getElementById("output").innerHTML += item.State + ": " + Number(item.Representatives) + "<br/>"
+        }
     }
 
     // count the total number of representatives
