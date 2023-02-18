@@ -36,7 +36,9 @@ document.getElementById("form").addEventListener('submit', (e) => {
                     repNum = 0;
                     avgPopPerRep = 0;
 
-                    if (document.getElementById("hamilton").checked) {
+                    if (document.getElementById("representatives").value < results.data.length) {
+                        alert("Number of representatives must be greater or equal to the number of states");
+                    } else if (document.getElementById("hamilton").checked) {
                         totalPopulation(results.data);
                         avgPopPerRepCalc();
                         stateStats(results.data);
@@ -62,7 +64,9 @@ document.getElementById("form").addEventListener('submit', (e) => {
             repNum = 0;
             avgPopPerRep = 0;
 
-            if (document.getElementById("hamilton").checked) {
+            if (document.getElementById("representatives").value < results.length) {
+                alert("Number of representatives must be greater or equal to the number of states");
+            } else if (document.getElementById("hamilton").checked) {
                 totalPopulation(results);
                 avgPopPerRepCalc();
                 stateStats(results);
