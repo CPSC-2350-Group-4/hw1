@@ -89,17 +89,21 @@ function priorityScoreCalc(populationOfState, numberOfStateRep) {
     return priority;
 }
 
+
 function priorityAssign(results) {
+    let repAdded = 0;
+
     // add one rep and calculate priority score to each state
     for (let i = 0; i < results.length; i++) {
         results[i].Representatives = 1;
         results[i].priorityScore = priorityScoreCalc(results[i].Pop, results[i].Representatives);
+        repAdded += 1;
     }
 
     let highestPriorityScore = 0,
         objectWithHighestScore;
     // adds x amount of representatives to states
-    for (let i = 0; i < document.getElementById('representatives').value - 1; i++) {
+    for (let i = 0; i < document.getElementById('representatives').value - repAdded; i++) {
         highestPriorityScore = 0;
         objectWithHighestScore;
 
@@ -193,8 +197,14 @@ function sortNprint(results) {
     // for checking purpose
     let total = 0;
 
-    for (let i = 0; i < results.length; (i++) % results.length) {
-        total += results[i]['Floor'];
+    if (document.getElementById("hamilton").checked) {
+        for (let i = 0; i < results.length; (i++) % results.length) {
+            total += results[i]['Floor'];
+        }
+    } else {
+        for (let i = 0; i < results.length; i++) {
+            total += results[i].Representatives;
+        }
     }
 
     document.getElementById("output").innerHTML += "Total: " + total;
