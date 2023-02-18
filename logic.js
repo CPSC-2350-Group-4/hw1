@@ -58,6 +58,10 @@ document.getElementById("form").addEventListener('submit', (e) => {
             let worksheet = workbook.Sheets[workbook.SheetNames[0]];
             let results = XLSX.utils.sheet_to_json(worksheet, { raw: true });
 
+            totalPopNum = 0;
+            repNum = 0;
+            avgPopPerRep = 0;
+
             if (document.getElementById("hamilton").checked) {
                 totalPopulation(results);
                 avgPopPerRepCalc();
@@ -89,7 +93,7 @@ function priorityScoreCalc(populationOfState, numberOfStateRep) {
     return priority;
 }
 
-
+// adds representatives based on priority scores
 function priorityAssign(results) {
     let repAdded = 0;
 
@@ -230,8 +234,6 @@ function outputcsv(results) {
             eol: ', \r\n'
         }));
     });
-
-
 }
 
 // this function is to turn array data into a downloadable csv file
