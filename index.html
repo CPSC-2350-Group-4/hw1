@@ -18,15 +18,18 @@ For hw1 in CPSC2350, 2023 Spring -->
         <input type="number" id="representatives" value="435" min="1"><br><br>
         <label>Use Hamilton Apportionment instead</label>
         <input type="checkbox" id="hamilton"><br><br>
-        <input type="file" id="csv" accept=".csv">
+        <input id="file" type="file" accept=".csv,.xlsx">
         <br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" id="submit">
     </form><br>
 
     <!-- to help with coverting csv data to json -->
     <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <!-- to help with converting json into csv files -->
     <script defer src="https://cdn.jsdelivr.net/npm/json2csv"></script>
+    <!-- to help with converting xlsx to json -->
+    <script defer src="https://unpkg.com/xlsx@0.18.5/dist/shim.min.js"></script>
+    <script defer src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <script defer src="./logic.js"></script>
 

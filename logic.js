@@ -6,47 +6,79 @@ let totalPopNum = 0, // number of total population of all states
     repNum = 0, // number of total representatives
     avgPopPerRep = 0; // average population per representative
 
+
 // Author: Grantley Kuo
 // Debug: Matthew Pham 
-const submit = document.getElementById("form").addEventListener('submit', (e) => {
+document.getElementById("form").addEventListener('submit', (e) => {
+    // prevent refreshing the page
     e.preventDefault();
 
-    // Papa.parse turns .csv file into json object
-    // where it contains several inner json objects
-    // they look like {States: "state_name", Pop: "#"}
-    Papa.parse(document.getElementById('csv').files[0],
-        {
-            // these are parsing attributes
-            download: true,
-            header: true,
-            skipEmptyLines: true,
+    let filename = document.getElementById('file').files[0].name.split('.').pop();
 
-            // when reading is finished,
-            // the data will be parsed to results
-            complete: function (results) {
-                totalPopNum = 0;
-                repNum = 0;
-                avgPopPerRep = 0;
-                if (document.getElementById("hamilton").checked) {
-                    totalPopulation(results);
-                    avgPopPerRepCalc();
-                    stateStats(results);
-                    sortNprint(results);
-                } else {
-                    priorityAssign(results);
-                    sortNprint(results);
+    if (filename == "csv") {
+        // Papa.parse turns .csv file into json object
+        // where it contains several inner json objects
+        // they look like {States: "state_name", Pop: "#"}
+        Papa.parse(document.getElementById('file').files[0],
+            {
+                // these are parsing attributes
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: function (h) {
+                    return h.trim();
+                },
+
+                // when reading is finished,
+                // the data will be parsed to results
+                complete: function (results) {
+                    totalPopNum = 0;
+                    repNum = 0;
+                    avgPopPerRep = 0;
+
+                    if (document.getElementById("hamilton").checked) {
+                        totalPopulation(results.data);
+                        avgPopPerRepCalc();
+                        stateStats(results.data);
+                        sortNprint(results.data);
+                    } else {
+                        priorityAssign(results.data);
+                        sortNprint(results.data);
+                    }
+                    outputcsv(results.data);
                 }
-                
-                outputcsv(results);
+            });
+    } else {    // created by Yunze Guan
+                // convert xlsx to json array
+        const file = document.getElementById('file').files[0];
+
+        file.arrayBuffer().then((res) => {
+            let data = new Uint8Array(res);
+            let workbook = XLSX.read(data, { type: "array" });
+            let worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            let results = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
+            if (document.getElementById("hamilton").checked) {
+                totalPopulation(results);
+                avgPopPerRepCalc();
+                stateStats(results);
+                sortNprint(results);
+            } else {
+                priorityAssign(results);
+                sortNprint(results);
             }
+            outputcsv(results);
+
         });
+
+    }
 });
 
 // Algorithm implemented by: Yunze Guan(Gary)
 // calculate the total population of all states
 function totalPopulation(results) {
-    for (let i = 0; i < results.data.length; i++) {
-        totalPopNum += Number(results.data[i].Pop);
+    for (let i = 0; i < results.length; i++) {
+        totalPopNum += Number(results[i].Pop);
     }
 
 }
@@ -59,31 +91,31 @@ function priorityScoreCalc(populationOfState, numberOfStateRep) {
 
 function priorityAssign(results) {
     // add one rep and calculate priority score to each state
-    for (let i=0; i<results.data.length; i++) {
-        results.data[i].Representatives = 1;
-        results.data[i].priorityScore = priorityScoreCalc(results.data[i].Pop, results.data[i].Representatives);
+    for (let i = 0; i < results.length; i++) {
+        results[i].Representatives = 1;
+        results[i].priorityScore = priorityScoreCalc(results[i].Pop, results[i].Representatives);
     }
 
     let highestPriorityScore = 0,
         objectWithHighestScore;
     // adds x amount of representatives to states
-    for (let i=0; i<document.getElementById('representatives').value - 1; i++) {
+    for (let i = 0; i < document.getElementById('representatives').value - 1; i++) {
         highestPriorityScore = 0;
         objectWithHighestScore;
 
         // locates state with calculated highest priority
-        for (let i=0; i<results.data.length; i++) {
-            results.data[i].priorityScore = priorityScoreCalc(results.data[i].Pop, results.data[i].Representatives)
-            if (results.data[i].priorityScore > highestPriorityScore) {
-                highestPriorityScore = results.data[i].priorityScore;
-                objectWithHighestScore = results.data[i];
+        for (let i = 0; i < results.length; i++) {
+            results[i].priorityScore = priorityScoreCalc(results[i].Pop, results[i].Representatives)
+            if (results[i].priorityScore > highestPriorityScore) {
+                highestPriorityScore = results[i].priorityScore;
+                objectWithHighestScore = results[i];
             }
         }
 
         // adds one representative to state with highest priority
         objectWithHighestScore.Representatives = objectWithHighestScore.Representatives + 1;
     }
-    
+
 }
 
 // calculate the average population corresponding to each representative
@@ -98,13 +130,13 @@ function stateStats(results) {
     let minNumRepEachState = 0, numRepLeft = 0;
 
     // write divide, floor and remain to each state
-    for (let i = 0; i < results.data.length; i++) {
-        let divide = Number((Number(results.data[i].Pop) / avgPopPerRep).toFixed(2)),
+    for (let i = 0; i < results.length; i++) {
+        let divide = Number((Number(results[i].Pop) / avgPopPerRep).toFixed(2)),
             floor = Math.floor(divide),
             remain = Number((divide - floor).toFixed(2));
 
-        results.data[i] = {
-            State: results.data[i].State, Pop: results.data[i].Pop,
+        results[i] = {
+            State: results[i].State, Pop: results[i].Pop,
             Floor: floor, Remain: remain
         };
 
@@ -123,14 +155,14 @@ function stateStats(results) {
 function fillRep(results, numRepLeft) {
     // sort the results object array by remainder
     // in descending order
-    results.data.sort(function (a, b) {
+    results.sort(function (a, b) {
         return a.Remain > b.Remain ? -1 : 1;
     });
 
     // fill the remaining representatives by remainder
     // states with large remainder will be filled first
-    for (let i = 0; i < results.data.length && numRepLeft > 0; (i++) % results.data.length) {
-        results.data[i]['Floor'] += 1;
+    for (let i = 0; i < results.length && numRepLeft > 0; (i++) % results.length) {
+        results[i]['Floor'] += 1;
 
         numRepLeft -= 1;
     }
@@ -139,7 +171,7 @@ function fillRep(results, numRepLeft) {
 // print out the results on the page
 function sortNprint(results) {
     // sort the states alphabetically
-    results.data.sort(function (a, b) {
+    results.sort(function (a, b) {
         return a.State > b.State ? 1 : -1;
     });
 
@@ -148,11 +180,11 @@ function sortNprint(results) {
 
     // print the results
     if (document.getElementById("hamilton").checked) {
-        for (let item of results.data) {
+        for (let item of results) {
             document.getElementById("output").innerHTML += item.State + ": " + Number(item.Floor) + "<br/>";
         }
     } else {
-        for (let item of results.data) {
+        for (let item of results) {
             document.getElementById("output").innerHTML += item.State + ": " + Number(item.Representatives) + "<br/>"
         }
     }
@@ -161,8 +193,8 @@ function sortNprint(results) {
     // for checking purpose
     let total = 0;
 
-    for (let i = 0; i < results.data.length; (i++) % results.data.length) {
-        total += results.data[i]['Floor'];
+    for (let i = 0; i < results.length; (i++) % results.length) {
+        total += results[i]['Floor'];
     }
 
     document.getElementById("output").innerHTML += "Total: " + total;
@@ -174,8 +206,8 @@ function outputcsv(results) {
     let repData = [];
 
     // push data into array 
-    for (let i = 0; i < results.data.length; i++) {
-        repData.push({ State: results.data[i].State, Rep: results.data[i].Floor });
+    for (let i = 0; i < results.length; i++) {
+        repData.push({ State: results[i].State, Rep: results[i].Floor });
     }
 
     // get the element button
